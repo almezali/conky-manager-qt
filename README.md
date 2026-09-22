@@ -1,5 +1,6 @@
 <div align="center">
-
+<img width="512" height="495" alt="CM-512" src="https://github.com/user-attachments/assets/bc9a2c64-d434-49ec-8b2f-fdfdb61d78a0" />
+  
 # Conky Manager Qt
 
 **Your desktop, finally the way you pictured it.**
