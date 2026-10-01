@@ -29,7 +29,7 @@ Supported architectures:
     curl -fsSL https://almezali.github.io/conky-manager-qt/apt.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/conky-manager-qt.gpg
     echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/conky-manager-qt.gpg] https://almezali.github.io/conky-manager-qt stable main" | sudo tee /etc/apt/sources.list.d/conky-manager-qt.list
     sudo apt update
-    sudo apt install conky-manager-qt
+    sudo apt install conky-manager-q
 
 ### arm64
 
@@ -39,7 +39,7 @@ Use the same setup with the arm64 architecture:
     curl -fsSL https://almezali.github.io/conky-manager-qt/apt.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/conky-manager-qt.gpg
     echo "deb [arch=arm64 signed-by=/etc/apt/keyrings/conky-manager-qt.gpg] https://almezali.github.io/conky-manager-qt stable main" | sudo tee /etc/apt/sources.list.d/conky-manager-qt.list
     sudo apt update
-    sudo apt install conky-manager-qt
+    sudo apt install conky-manager-q
 
 ## Update
 
