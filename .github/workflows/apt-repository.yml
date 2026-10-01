@@ -53,6 +53,27 @@ jobs:
           test -n "$(find apt-work/pool/main -maxdepth 1 -name '*.deb' -print -quit)"
           find apt-work/pool/main -maxdepth 1 -type f -name '*.deb' -printf '%f\n'
 
+      - name: Normalize Debian architectures
+        run: |
+          set -euo pipefail
+          for deb in apt-work/pool/main/*.deb; do
+            arch="$(dpkg-deb -f "$deb" Architecture)"
+            case "$arch" in
+              amd64|arm64|all) target="$arch" ;;
+              x86_64) target="amd64" ;;
+              aarch64) target="arm64" ;;
+              *) echo "Unsupported Debian architecture in $deb: $arch"; exit 1 ;;
+            esac
+            if [ "$arch" != "$target" ]; then
+              tmp="$(mktemp -d)"
+              dpkg-deb -R "$deb" "$tmp"
+              sed -i "s/^Architecture: .*/Architecture: $target/" "$tmp/DEBIAN/control"
+              dpkg-deb -b "$tmp" "$deb.new" >/dev/null
+              mv "$deb.new" "$deb"
+              rm -rf "$tmp"
+            fi
+          done
+
       - name: Import APT signing key
         env:
           APT_GPG_PRIVATE_KEY: ${{ secrets.APT_GPG_PRIVATE_KEY }}
@@ -92,7 +113,21 @@ jobs:
           gpg "${sign_args[@]}" --local-user "${APT_KEY_ID}" --armor --detach-sign --digest-algo SHA256 -o dists/stable/Release.gpg dists/stable/Release
 
           touch .nojekyll
-          grep -E '^(Package|Version|Architecture|Filename):' dists/stable/main/binary-amd64/Packages || true
+          grep -q '^Package: conky-manager-q
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: apt-work
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+ dists/stable/main/binary-amd64/Packages
+          grep -E '^(Package|Version|Architecture|Filename):' dists/stable/main/binary-amd64/Packages
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
