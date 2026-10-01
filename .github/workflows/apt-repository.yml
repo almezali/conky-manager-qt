@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: apt-repository
+  group: apt-qt
   cancel-in-progress: false
 
 jobs:
@@ -22,9 +22,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Install APT repository tools
         run: |
           sudo apt-get update
@@ -35,6 +32,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
           if [ "${{ github.event_name }}" = "release" ]; then
             echo "tag=${{ github.event.release.tag_name }}" >> "$GITHUB_OUTPUT"
           else
@@ -42,7 +40,7 @@ jobs:
             echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Download latest Debian packages
+      - name: Download Debian packages
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -50,8 +48,8 @@ jobs:
           rm -rf apt-work
           mkdir -p apt-work/pool/main
           gh release download "${{ steps.release.outputs.tag }}" --repo "$GITHUB_REPOSITORY" --pattern '*.deb' --dir apt-work/pool/main --clobber
-          test -n "$(find apt-work/pool/main -maxdepth 1 -name '*.deb' -print -quit)"
-          find apt-work/pool/main -maxdepth 1 -type f -name '*.deb' -printf '%f\n'
+          test -n "$(find apt-work/pool/main -maxdepth 1 -type f -name '*.deb' -print -quit)"
+          ls -lh apt-work/pool/main/*.deb
 
       - name: Normalize Debian architectures
         run: |
@@ -64,6 +62,7 @@ jobs:
               aarch64) target="arm64" ;;
               *) echo "Unsupported Debian architecture in $deb: $arch"; exit 1 ;;
             esac
+            echo "$(basename "$deb"): $arch -> $target"
             if [ "$arch" != "$target" ]; then
               tmp="$(mktemp -d)"
               dpkg-deb -R "$deb" "$tmp"
@@ -77,13 +76,12 @@ jobs:
       - name: Import APT signing key
         env:
           APT_GPG_PRIVATE_KEY: ${{ secrets.APT_GPG_PRIVATE_KEY }}
-          APT_GPG_PASSPHRASE: ${{ secrets.APT_GPG_PASSPHRASE }}
         run: |
           set -euo pipefail
-          test -n "$APT_GPG_PRIVATE_KEY"
+          test -n "${APT_GPG_PRIVATE_KEY:-}"
           export GNUPGHOME="$(mktemp -d)"
           chmod 700 "$GNUPGHOME"
-          printf '%s' "$APT_GPG_PRIVATE_KEY" | gpg --batch --import
+          printf '%s\n' "$APT_GPG_PRIVATE_KEY" | gpg --batch --import
           key_id="$(gpg --batch --list-secret-keys --with-colons | awk -F: '/^sec:/ {print $5; exit}')"
           test -n "$key_id"
           echo "APT_KEY_ID=$key_id" >> "$GITHUB_ENV"
@@ -96,37 +94,24 @@ jobs:
           set -euo pipefail
           export GNUPGHOME="$(mktemp -d)"
           chmod 700 "$GNUPGHOME"
-          printf '%s' "${{ secrets.APT_GPG_PRIVATE_KEY }}" | gpg --batch --import
+          printf '%s\n' "${{ secrets.APT_GPG_PRIVATE_KEY }}" | gpg --batch --import
 
           mkdir -p apt-work/dists/stable/main/binary-amd64
           cd apt-work
-
           dpkg-scanpackages --arch amd64 pool/main /dev/null > dists/stable/main/binary-amd64/Packages
+          test -s dists/stable/main/binary-amd64/Packages
+          grep -q '^Package: conky-manager-q$' dists/stable/main/binary-amd64/Packages
           gzip -9c dists/stable/main/binary-amd64/Packages > dists/stable/main/binary-amd64/Packages.gz
 
           apt-ftparchive             -o APT::FTPArchive::Release::Origin="almezali"             -o APT::FTPArchive::Release::Label="Conky Manager Qt"             -o APT::FTPArchive::Release::Suite="stable"             -o APT::FTPArchive::Release::Codename="stable"             -o APT::FTPArchive::Release::Architectures="amd64"             -o APT::FTPArchive::Release::Components="main"             release dists/stable > dists/stable/Release
 
           sign_args=(--batch --yes --pinentry-mode loopback)
-          if [ -n "${APT_GPG_PASSPHRASE:-}" ]; then sign_args+=(--passphrase "${APT_GPG_PASSPHRASE}"); fi
-
+          if [ -n "${APT_GPG_PASSPHRASE:-}" ]; then
+            sign_args+=(--passphrase "${APT_GPG_PASSPHRASE}")
+          fi
           gpg "${sign_args[@]}" --local-user "${APT_KEY_ID}" --clearsign --digest-algo SHA256 -o dists/stable/InRelease dists/stable/Release
           gpg "${sign_args[@]}" --local-user "${APT_KEY_ID}" --armor --detach-sign --digest-algo SHA256 -o dists/stable/Release.gpg dists/stable/Release
-
           touch .nojekyll
-          grep -q '^Package: conky-manager-q
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: apt-work
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
- dists/stable/main/binary-amd64/Packages
           grep -E '^(Package|Version|Architecture|Filename):' dists/stable/main/binary-amd64/Packages
 
       - name: Configure GitHub Pages
