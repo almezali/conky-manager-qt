@@ -1,0 +1,126 @@
+name: Publish Debian APT Repository
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: apt-repository
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install APT repository tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y apt-utils dpkg-dev gnupg
+
+      - name: Install GitHub CLI
+        run: sudo apt-get install -y gh
+
+      - name: Determine release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "tag=${{ github.event.release.tag_name }}" >> "$GITHUB_OUTPUT"
+          else
+            TAG="$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq '.tagName')"
+            echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Download latest Debian packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rm -rf apt-work
+          mkdir -p apt-work/pool/main
+          gh release download "${{ steps.release.outputs.tag }}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern '*.deb' \
+            --dir apt-work/pool/main \
+            --clobber
+
+          test -n "$(find apt-work/pool/main -maxdepth 1 -name '*.deb' -print -quit)"
+          find apt-work/pool/main -maxdepth 1 -type f -name '*.deb' -printf '%f\n'
+
+      - name: Import APT signing key
+        env:
+          APT_GPG_PRIVATE_KEY: ${{ secrets.APT_GPG_PRIVATE_KEY }}
+          APT_GPG_PASSPHRASE: ${{ secrets.APT_GPG_PASSPHRASE }}
+        run: |
+          test -n "$APT_GPG_PRIVATE_KEY"
+          printf '%s' "$APT_GPG_PRIVATE_KEY" | gpg --batch --import
+
+          cat > apt-work/gpg-passphrase.txt <<'EOF'
+          $APT_GPG_PASSPHRASE
+          EOF
+          chmod 600 apt-work/gpg-passphrase.txt
+
+      - name: Build APT repository
+        run: |
+          set -e
+          mkdir -p apt-work/dists/stable/main/binary-amd64
+          mkdir -p apt-work/dists/stable/main/binary-arm64
+
+          dpkg-scanpackages --arch amd64 apt-work/pool/main /dev/null > apt-work/dists/stable/main/binary-amd64/Packages
+          gzip -9c apt-work/dists/stable/main/binary-amd64/Packages > apt-work/dists/stable/main/binary-amd64/Packages.gz
+
+          dpkg-scanpackages --arch arm64 apt-work/pool/main /dev/null > apt-work/dists/stable/main/binary-arm64/Packages
+          gzip -9c apt-work/dists/stable/main/binary-arm64/Packages > apt-work/dists/stable/main/binary-arm64/Packages.gz
+
+          cd apt-work
+          cat > dists/stable/Release <<EOF
+          Origin: almezali
+          Label: Conky Manager Qt
+          Suite: stable
+          Codename: stable
+          Architectures: amd64 arm64
+          Components: main
+          Description: Conky Manager Qt Debian APT Repository
+          EOF
+
+          apt-ftparchive release dists/stable >> dists/stable/Release
+
+          gpg --batch --yes --pinentry-mode loopback \
+            --passphrase-file gpg-passphrase.txt \
+            --clearsign -o dists/stable/InRelease dists/stable/Release
+
+          gpg --batch --yes --pinentry-mode loopback \
+            --passphrase-file gpg-passphrase.txt \
+            -abs -o dists/stable/Release.gpg dists/stable/Release
+
+          rm -f gpg-passphrase.txt
+
+      - name: Export public signing key
+        run: |
+          gpg --armor --export > apt-work/apt.gpg
+          test -s apt-work/apt.gpg
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: apt-work
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
