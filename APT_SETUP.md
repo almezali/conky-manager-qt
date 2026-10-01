@@ -12,7 +12,9 @@ Public signing key:
 
 https://almezali.github.io/conky-manager-qt/apt.gpg
 
-Current release published to the repository: **v1.2**
+The current GitHub **Latest Release** is the `latest` release, containing the **v1.0 / v1.0-2** builds.
+
+The APT workflow follows the actual GitHub Latest Release, rather than a hard-coded version.
 
 Supported architectures:
 
@@ -87,7 +89,18 @@ The workflow runs automatically when a GitHub Release is published.
 
 It downloads the .deb packages from that release, generates APT metadata, signs the repository, and deploys it to GitHub Pages.
 
-A manual workflow run selects the current latest GitHub Release.
+A manual workflow run selects the current GitHub Latest Release.
+
+This means the APT repository does not need a version number manually changed in this document when a new Latest Release is published.
+
+## Current Release Check
+
+The GitHub Latest Release currently has these Debian packages:
+
+- `conky-manager-q_1.0-2_x86_64.deb`
+- `conky-manager-q_1.0-2_aarch64.deb`
+
+The same release also contains Arch, RPM and AppImage assets, but the APT repository publishes only the `.deb` packages.
 
 ## Verify the repository
 
@@ -103,5 +116,6 @@ After publishing, these files should be available:
 
 - The repository is signed with GPG.
 - APT verifies the repository using the installed keyring.
-- The APT repository contains Debian packages from the published GitHub Release.
+- The APT repository contains Debian packages from the GitHub Latest Release.
 - Publishing a new GitHub Release automatically updates the repository.
+- A manual workflow run can be used to resync the repository with the current Latest Release.
