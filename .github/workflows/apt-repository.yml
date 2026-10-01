@@ -68,9 +68,7 @@ jobs:
           test -n "$APT_GPG_PRIVATE_KEY"
           printf '%s' "$APT_GPG_PRIVATE_KEY" | gpg --batch --import
 
-          cat > apt-work/gpg-passphrase.txt <<'EOF'
-          $APT_GPG_PASSPHRASE
-          EOF
+          printf '%s' "$APT_GPG_PASSPHRASE" > apt-work/gpg-passphrase.txt
           chmod 600 apt-work/gpg-passphrase.txt
 
       - name: Build APT repository
