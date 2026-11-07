@@ -32,16 +32,16 @@
 
 **Pick your distribution — the package installs in one command.**
 
-[![Arch x86_64](https://img.shields.io/badge/Arch%20Linux-x86__64%20·%20pkg.tar.zst-1793D1?style=for-the-badge&logo=archlinux&logoColor=white)](https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q-1.0-2-x86_64.pkg.tar.zst)
-[![Arch aarch64](https://img.shields.io/badge/Arch%20Linux-aarch64%20·%20pkg.tar.zst-0F6A9C?style=for-the-badge&logo=archlinux&logoColor=white)](https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q-1.0-2-aarch64.pkg.tar.zst)
+[![Arch x86_64](https://img.shields.io/badge/Arch%20Linux-x86__64%20·%20pkg.tar.zst-1793D1?style=for-the-badge&logo=archlinux&logoColor=white)](https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q-1.2-1-x86_64.pkg.tar.zst)
+[![Arch aarch64](https://img.shields.io/badge/Arch%20Linux-aarch64%20·%20pkg.tar.zst-0F6A9C?style=for-the-badge&logo=archlinux&logoColor=white)](https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q-1.2-1-aarch64.pkg.tar.zst)
 
-[![Debian x86_64](https://img.shields.io/badge/Debian%20%2F%20Ubuntu-x86__64%20·%20.deb-A81D33?style=for-the-badge&logo=debian&logoColor=white)](https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q_1.0-2_x86_64.deb)
-[![Debian aarch64](https://img.shields.io/badge/Debian%20%2F%20Ubuntu-aarch64%20·%20.deb-6E1424?style=for-the-badge&logo=debian&logoColor=white)](https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q_1.0-2_aarch64.deb)
+[![Debian x86_64](https://img.shields.io/badge/Debian%20%2F%20Ubuntu-x86__64%20·%20.deb-A81D33?style=for-the-badge&logo=debian&logoColor=white)](https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q_1.2-1_x86_64.deb)
+[![Debian aarch64](https://img.shields.io/badge/Debian%20%2F%20Ubuntu-aarch64%20·%20.deb-6E1424?style=for-the-badge&logo=debian&logoColor=white)](https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q_1.2-1_aarch64.deb)
 
-[![Fedora x86_64](https://img.shields.io/badge/Fedora%20%2F%20openSUSE-x86__64%20·%20.rpm-51A2DA?style=for-the-badge&logo=fedora&logoColor=white)](https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q-1.0-2.x86_64.rpm)
-[![Fedora aarch64](https://img.shields.io/badge/Fedora%20%2F%20openSUSE-aarch64%20·%20.rpm-2C6C91?style=for-the-badge&logo=fedora&logoColor=white)](https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q-1.0-2.aarch64.rpm)
+[![Fedora x86_64](https://img.shields.io/badge/Fedora%20%2F%20openSUSE-x86__64%20·%20.rpm-51A2DA?style=for-the-badge&logo=fedora&logoColor=white)](https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q-1.2-1.x86_64.rpm)
+[![Fedora aarch64](https://img.shields.io/badge/Fedora%20%2F%20openSUSE-aarch64%20·%20.rpm-2C6C91?style=for-the-badge&logo=fedora&logoColor=white)](https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q-1.2-1.aarch64.rpm)
 
-[![AppImage](https://img.shields.io/badge/Any%20distribution-x86__64%20·%20AppImage-FF6600?style=for-the-badge&logo=linux&logoColor=white)](https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-1.0-2-x86_64.AppImage)
+[![AppImage](https://img.shields.io/badge/Any%20distribution-x86__64%20·%20AppImage-FF6600?style=for-the-badge&logo=linux&logoColor=white)](https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-1.2-1-x86_64.AppImage)
 [![Source](https://img.shields.io/badge/Build%20from-source-181717?style=for-the-badge&logo=github&logoColor=white)](#-build-from-source)
 
 <sub>Requires **Conky** to be installed · works on X11 and XWayland · no runtime dependencies to install</sub>
@@ -129,6 +129,7 @@ One small native app. No runtime to install, nothing running in the background, 
 - Performance presets: *Ultra smooth* (lower CPU), *Balanced*, *Performance* (faster updates).
 - Light, dark and system-following UI themes.
 
+
 ---
 
 ## 📦 Installation
@@ -143,34 +144,34 @@ Prebuilt packages are published for **x86_64** and **aarch64** (ARM64 — Raspbe
 
 ```bash
 # x86_64
-curl -LO https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q-1.0-1-x86_64.pkg.tar.zst
-sudo pacman -U conky-manager-q-1.0-1-x86_64.pkg.tar.zst
+curl -LO https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q-1.2-1-x86_64.pkg.tar.zst
+sudo pacman -U conky-manager-q-1.2-1-x86_64.pkg.tar.zst
 
 # aarch64
-curl -LO https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q-1.0-1-aarch64.pkg.tar.zst
-sudo pacman -U conky-manager-q-1.0-1-aarch64.pkg.tar.zst
+curl -LO https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q-1.2-1-aarch64.pkg.tar.zst
+sudo pacman -U conky-manager-q-1.2-1-aarch64.pkg.tar.zst
 ```
 
 ### Debian, Ubuntu, Linux Mint, Pop!\_OS, Zorin, elementary
 
 ```bash
 # x86_64
-curl -LO https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q_1.0_x86_64.deb
-sudo apt install ./conky-manager-q_1.0_x86_64.deb
+curl -LO https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q_1.2-1_x86_64.deb
+sudo apt install ./conky-manager-q_1.2-1_x86_64.deb
 
 # aarch64
-curl -LO https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q_1.0_aarch64.deb
-sudo apt install ./conky-manager-q_1.0_aarch64.deb
+curl -LO https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q_1.2-1_aarch64.deb
+sudo apt install ./conky-manager-q_1.2-1_aarch64.deb
 ```
 
 ### Fedora, RHEL, CentOS Stream, openSUSE, Nobara
 
 ```bash
 # x86_64
-sudo dnf install https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q-1.0-1.x86_64.rpm
+sudo dnf install https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q-1.2-1.x86_64.rpm
 
 # aarch64
-sudo dnf install https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q-1.0-1.aarch64.rpm
+sudo dnf install https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q-1.2-1.aarch64.rpm
 ```
 
 openSUSE users: `sudo zypper install <url>`.
@@ -180,7 +181,7 @@ openSUSE users: `sudo zypper install <url>`.
 Works on Void, Gentoo, Slackware, NixOS, Alpine, Solus, immutable systems (Silverblue, Kinoite, Bazzite, SteamOS) and anything else with glibc.
 
 ```bash
-curl -LO https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-x86_64.AppImage
+curl -LO https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-x86_64.AppImage
 chmod +x conky-manager-x86_64.AppImage
 ./conky-manager-x86_64.AppImage
 ```
@@ -211,13 +212,13 @@ Categories=Utility;Settings;DesktopSettings;
 
 | Download | Architecture | Format | Made for | Installs with |
 |---|:---:|:---:|---|---|
-| [![dl](https://img.shields.io/badge/⬇-Get%20it-1793D1?style=flat-square)](https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q-1.0-1-x86_64.pkg.tar.zst) `conky-manager-q-1.0-1-x86_64.pkg.tar.zst` | x86_64 | `pkg.tar.zst` | Arch, Manjaro, EndeavourOS, Garuda, Artix | `pacman -U` |
-| [![dl](https://img.shields.io/badge/⬇-Get%20it-0F6A9C?style=flat-square)](https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q-1.0-1-aarch64.pkg.tar.zst) `conky-manager-q-1.0-1-aarch64.pkg.tar.zst` | aarch64 | `pkg.tar.zst` | Arch ARM, Asahi, Pi running Arch | `pacman -U` |
-| [![dl](https://img.shields.io/badge/⬇-Get%20it-A81D33?style=flat-square)](https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q_1.0_x86_64.deb) `conky-manager-q_1.0_x86_64.deb` | x86_64 | `.deb` | Debian, Ubuntu, Mint, Pop!_OS, Zorin, MX | `apt install ./` |
-| [![dl](https://img.shields.io/badge/⬇-Get%20it-6E1424?style=flat-square)](https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q_1.0_aarch64.deb) `conky-manager-q_1.0_aarch64.deb` | aarch64 | `.deb` | Raspberry Pi OS, Ubuntu ARM, ARM laptops | `apt install ./` |
-| [![dl](https://img.shields.io/badge/⬇-Get%20it-51A2DA?style=flat-square)](https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q-1.0-1.x86_64.rpm) `conky-manager-q-1.0-1.x86_64.rpm` | x86_64 | `.rpm` | Fedora, Nobara, RHEL, CentOS, openSUSE | `dnf install` |
-| [![dl](https://img.shields.io/badge/⬇-Get%20it-2C6C91?style=flat-square)](https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-q-1.0-1.aarch64.rpm) `conky-manager-q-1.0-1.aarch64.rpm` | aarch64 | `.rpm` | Fedora ARM, openSUSE ARM | `dnf install` |
-| [![dl](https://img.shields.io/badge/⬇-Get%20it-FF6600?style=flat-square)](https://github.com/almezali/conky-manager-qt/releases/download/latest/conky-manager-x86_64.AppImage) `conky-manager-x86_64.AppImage` | x86_64 | `AppImage` | Void, Gentoo, NixOS, Alpine, Solus, Silverblue, SteamOS | `chmod +x` and run |
+| [![dl](https://img.shields.io/badge/⬇-Get%20it-1793D1?style=flat-square)](https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q-1.2-1-x86_64.pkg.tar.zst) `conky-manager-q-1.2-1-x86_64.pkg.tar.zst` | x86_64 | `pkg.tar.zst` | Arch, Manjaro, EndeavourOS, Garuda, Artix | `pacman -U` |
+| [![dl](https://img.shields.io/badge/⬇-Get%20it-0F6A9C?style=flat-square)](https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q-1.2-1-aarch64.pkg.tar.zst) `conky-manager-q-1.2-1-aarch64.pkg.tar.zst` | aarch64 | `pkg.tar.zst` | Arch ARM, Asahi, Pi running Arch | `pacman -U` |
+| [![dl](https://img.shields.io/badge/⬇-Get%20it-A81D33?style=flat-square)](https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q_1.2-1_x86_64.deb) `conky-manager-q_1.2-1_x86_64.deb` | x86_64 | `.deb` | Debian, Ubuntu, Mint, Pop!_OS, Zorin, MX | `apt install ./` |
+| [![dl](https://img.shields.io/badge/⬇-Get%20it-6E1424?style=flat-square)](https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q_1.2-1_aarch64.deb) `conky-manager-q_1.2-1_aarch64.deb` | aarch64 | `.deb` | Raspberry Pi OS, Ubuntu ARM, ARM laptops | `apt install ./` |
+| [![dl](https://img.shields.io/badge/⬇-Get%20it-51A2DA?style=flat-square)](https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q-1.2-1.x86_64.rpm) `conky-manager-q-1.2-1.x86_64.rpm` | x86_64 | `.rpm` | Fedora, Nobara, RHEL, CentOS, openSUSE | `dnf install` |
+| [![dl](https://img.shields.io/badge/⬇-Get%20it-2C6C91?style=flat-square)](https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-q-1.2-1.aarch64.rpm) `conky-manager-q-1.2-1.aarch64.rpm` | aarch64 | `.rpm` | Fedora ARM, openSUSE ARM | `dnf install` |
+| [![dl](https://img.shields.io/badge/⬇-Get%20it-FF6600?style=flat-square)](https://github.com/almezali/conky-manager-qt/releases/download/v1.2/conky-manager-x86_64.AppImage) `conky-manager-x86_64.AppImage` | x86_64 | `AppImage` | Void, Gentoo, NixOS, Alpine, Solus, Silverblue, SteamOS | `chmod +x` and run |
 
 <sub>All packages are cut from the same release. Not sure which one you need? Run `uname -m` — `x86_64` means a normal desktop or laptop, `aarch64` means ARM.</sub>
 
