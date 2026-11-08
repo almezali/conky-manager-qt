@@ -96,18 +96,46 @@ jobs:
           chmod 700 "$GNUPGHOME"
           printf '%s\n' "${{ secrets.APT_GPG_PRIVATE_KEY }}" | gpg --batch --import
 
-          mkdir -p apt-work/dists/stable/main/binary-amd64
+          mkdir -p apt-work/dists/stable/main/binary-amd64 apt-work/dists/stable/main/binary-arm64
           cd apt-work
-          dpkg-scanpackages pool/main /dev/null > /tmp/Packages.all
-          awk '
-            BEGIN { RS=""; ORS="\n\n" }
-            /(^|\n)Architecture: amd64(\n|$)/ { print }
-          ' /tmp/Packages.all > dists/stable/main/binary-amd64/Packages
-          test -s dists/stable/main/binary-amd64/Packages
-          grep -q '^Package: conky-manager-q$' dists/stable/main/binary-amd64/Packages
-          gzip -9c dists/stable/main/binary-amd64/Packages > dists/stable/main/binary-amd64/Packages.gz
 
-          apt-ftparchive             -o APT::FTPArchive::Release::Origin="almezali"             -o APT::FTPArchive::Release::Label="Conky Manager Qt"             -o APT::FTPArchive::Release::Suite="stable"             -o APT::FTPArchive::Release::Codename="stable"             -o APT::FTPArchive::Release::Architectures="amd64"             -o APT::FTPArchive::Release::Components="main"             release dists/stable > dists/stable/Release
+          # Build a separate package pool for each architecture. This prevents
+          # dpkg-scanpackages from treating amd64/arm64 builds as duplicates.
+          for arch in amd64 arm64; do
+            pool="pool-index-$arch"
+            mkdir -p "$pool"
+            for deb in pool/main/*.deb; do
+              deb_arch="$(dpkg-deb -f "$deb" Architecture)"
+              if [ "$deb_arch" = "$arch" ] || [ "$deb_arch" = "all" ]; then
+                cp "$deb" "$pool/"
+              fi
+            done
+
+            test -n "$(find "$pool" -maxdepth 1 -type f -name '*.deb' -print -quit)" || {
+              echo "No Debian packages found for architecture $arch"
+              exit 1
+            }
+
+            dpkg-scanpackages "$pool" /dev/null > "dists/stable/main/binary-$arch/Packages.tmp"
+            # Point package records to the real published files under pool/main.
+            sed "s#Filename: $pool/#Filename: pool/main/#" \
+              "dists/stable/main/binary-$arch/Packages.tmp" > "dists/stable/main/binary-$arch/Packages"
+            rm "dists/stable/main/binary-$arch/Packages.tmp"
+
+            test -s "dists/stable/main/binary-$arch/Packages"
+            grep -q '^Package: conky-manager-q$' "dists/stable/main/binary-$arch/Packages"
+            gzip -9c "dists/stable/main/binary-$arch/Packages" > "dists/stable/main/binary-$arch/Packages.gz"
+            rm -rf "$pool"
+          done
+
+          apt-ftparchive \
+            -o APT::FTPArchive::Release::Origin="almezali" \
+            -o APT::FTPArchive::Release::Label="Conky Manager Qt" \
+            -o APT::FTPArchive::Release::Suite="stable" \
+            -o APT::FTPArchive::Release::Codename="stable" \
+            -o APT::FTPArchive::Release::Architectures="amd64 arm64" \
+            -o APT::FTPArchive::Release::Components="main" \
+            release dists/stable > dists/stable/Release
 
           sign_args=(--batch --yes --pinentry-mode loopback)
           if [ -n "${APT_GPG_PASSPHRASE:-}" ]; then
@@ -115,7 +143,7 @@ jobs:
           fi
           gpg "${sign_args[@]}" --local-user "${APT_KEY_ID}" --clearsign --digest-algo SHA256 -o dists/stable/InRelease dists/stable/Release
           gpg "${sign_args[@]}" --local-user "${APT_KEY_ID}" --armor --detach-sign --digest-algo SHA256 -o dists/stable/Release.gpg dists/stable/Release
-          touch .nojekyll
+                    touch .nojekyll
           grep -E '^(Package|Version|Architecture|Filename):' dists/stable/main/binary-amd64/Packages
 
       - name: Configure GitHub Pages
